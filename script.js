@@ -1,5 +1,11 @@
-/* If you're feeling fancy you can add interactivity 
-    to your site with Javascript */
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser')
 
-// prints "hi" in the browser's dev tools console
-console.log('hi');
+
+
+
+
+const listener = app.listen(process.env.PORT || 3000, () => {
+  console.log('Your app is listening on port ' + listener.address().port)
+})
