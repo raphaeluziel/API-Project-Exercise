@@ -4,10 +4,11 @@ const mongo = require('mongodb');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const shortid = require('shortid');
 
 var port = process.env.PORT || 3000;
 
-mongoose.connect(process.env.MONGO_URI);
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
 
 app.use(cors())
 app.use(bodyParser.urlencoded({extended: false}))
@@ -23,8 +24,11 @@ app.get('/', (req, res) => {
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
+  _id: {
+  'type': String,
+  'default': shortid.generate
+  },
   username: {type: String, required: true},
-  //userId: {type: String, required: true}
 });
 
 var userModel = mongoose.model('userModel', userSchema);
@@ -36,11 +40,20 @@ app.route('/api/exercise/new-user').post(function(req, res){
   var query = userModel.findOne({username: req.body.username});
   
   query.then(function(doc){
-    if(!doc){userModel.save(); res.json({"message": "ADDED"});}
+    console.log(doc);
+    if(!doc){
+      var newUser = new userModel({username: req.body.username});
+      newUser.save(function(err, data){
+        res.json({"message": "added new user to database"});
+      });
+    }
     else{res.json({"message": "already in database"});}
   });
 
 });
+
+console.log(shortid.generate());
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
