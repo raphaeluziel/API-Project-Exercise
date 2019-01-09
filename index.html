@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Exercise Tracker</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css">
+    
+    <!-- import the webpage's javascript file -->
+    <script src="/script.js" defer></script>
+  </head>  
+  <body>
+    <h1>Exercise Tracker</h1>
+    
+    <form action="/api/exercise/add" method="post">
+      <h3>Add exercises</h3>
+            <p><code>POST /api/exercise/add</code></p>
+            <input id="uid" type="text" name="userId" placeholder="userId*">
+            <input id="desc" type="text" name="description" placeholder="description*">
+            <input id="dur" type="text" name="duration" placeholder="duration* (mins.)">
+            <input id="dat" type="text" name="date" placeholder="date (yyyy-mm-dd)">
+            <input type="submit" value="Submit">
+          </form>
+    
+
+    <!-- include the Glitch button to show what the webpage is about and
+          to make it easier for folks to view source and remix -->
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+</html>
