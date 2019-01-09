@@ -7,7 +7,7 @@ const cors = require('cors')
 
 var port = process.env.PORT || 3000;
 
-mongoose.connect(process.env.MONGO_URI, { useMongoClient: true });
+mongoose.connect(process.env.MONGO_URI);
 
 app.use(cors())
 app.use(bodyParser.urlencoded({extended: false}))
@@ -36,7 +36,7 @@ app.route('/api/exercise/new-user').post(function(req, res){
   var query = userModel.findOne({username: req.body.username});
   
   query.then(function(doc){
-    if(!doc){res.json({"message": "ADDED"});}
+    if(!doc){userModel.save(); res.json({"message": "ADDED"});}
     else{res.json({"message": "already in database"});}
   });
 
