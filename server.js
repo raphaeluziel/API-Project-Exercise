@@ -31,7 +31,14 @@ var userModel = mongoose.model('userModel', userSchema);
 
 app.route('/api/exercise/new-user').post(function(req, res){
 
-  res.json({"message": req.body.username});
+  //res.json({"message": req.body.username});
+  
+  var query = userModel.findOne({username: req.body.username});
+  
+  query.then(function(doc){
+    if(!doc){res.json({"message": "ADDED"});}
+    else{res.json({"message": "already in database"});}
+  });
 
 });
 
