@@ -80,6 +80,11 @@ app.route('/api/exercise/add').post(function(req, res){
 });
 
 
+app.route('/api/exercise/log').get(function(req, res){
+  console.log();
+});
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
