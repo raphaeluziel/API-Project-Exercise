@@ -24,19 +24,15 @@ app.get('/', (req, res) => {
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
-  _id: {
-  'type': String,
-  'default': shortid.generate
-  },
+  _id: {'type': String, 'default': shortid.generate},
   username: {type: String, required: true},
+  activity: [{date: Date, description: String, duration: Number}]
 });
 
 var userModel = mongoose.model('userModel', userSchema);
 
 app.route('/api/exercise/new-user').post(function(req, res){
 
-  //res.json({"message": req.body.username});
-  
   var query = userModel.findOne({username: req.body.username});
   
   query.then(function(doc){
@@ -49,10 +45,37 @@ app.route('/api/exercise/new-user').post(function(req, res){
     }
     else{res.json({"message": "already in database"});}
   });
-
+  
 });
+  
+app.route('/api/exercise/add').post(function(req, res){
+  
+  var date = new Date(req.body.date);
+  
+  if (date == "Invalid Date") {return res.send("Not a valid date format");}
+  if (!req.body.description) {return res.send("No description provided");}
+  if (!req.body.duration) {return res.send("No duration provided");}
+  if (!req.body.userId) {return res.send("No user ID provided");}
 
-console.log(shortid.generate());
+  userModel.findById(req.body.userId, function(err, data){
+
+    if (err) return console.log("ERROR FINDING BY ID");
+    
+    if(!data) {return res.send("No user with that ID exists")}
+    
+    data.activity.push({date: req.body.date, description: req.body.description, duration: req.body.duration});
+    data.save(function(err, updatedActivity){
+      if(err) return console.log("ERROR SAVING ACTIVITY");
+      res.json({
+        username: data.username,
+        date: date.toDateString(),
+        description: req.body.description,
+        duration: req.body.duration,
+        userId: req.body.userId
+      });
+    });
+  });
+});
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
