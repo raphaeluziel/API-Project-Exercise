@@ -81,9 +81,21 @@ app.route('/api/exercise/add').post(function(req, res){
 
 
 app.route('/api/exercise/log').get(function(req, res){
-  res.json({"message": req.query.from});
-  console.log("GEETING STUFF");
+  
+  var query = userModel.findById({_id: req.query.userId});
+  
+  query.then(function(doc){
+    var log = [];
+    
+    for (var i = 0; i < req.query.limit; i++){
+      log.push({"date": doc.activity[i].date.toDateString(), "descrition": doc.activity[i].description, "duration": doc.activity[i].duration});
+    }
+    
+    res.json({_id: doc._id, username: doc.username, "log": log});
+  });
+
 });
+
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
