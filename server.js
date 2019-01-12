@@ -52,7 +52,8 @@ app.route('/api/exercise/new-user').post(function(req, res){
   
 app.route('/api/exercise/add').post(function(req, res){
   
-  var date = new Date(req.body.date);
+  var date;
+  req.body.date ? date = new Date(req.body.date) : date = new Date();
   
   if (date == "Invalid Date") {return res.send("Not a valid date format");}
   if (!req.body.description) {return res.send("No description provided");}
@@ -81,17 +82,38 @@ app.route('/api/exercise/add').post(function(req, res){
 
 
 app.route('/api/exercise/log').get(function(req, res){
+
+  var from = new Date(req.query.from);
+  var to = new Date(req.query.to);
   
-  var query = userModel.findById({_id: req.query.userId});
+  console.log(from.toDateString(), " to ", to.toDateString());
+  
+  var query = userModel.findById({_id: req.query.userId})
   
   query.then(function(doc){
-    var log = [];
     
-    for (var i = 0; i < req.query.limit; i++){
-      log.push({"date": doc.activity[i].date.toDateString(), "descrition": doc.activity[i].description, "duration": doc.activity[i].duration});
+    var log = [];
+
+    var len;
+    req.query.limit > doc.activity.length ? len = doc.activity.length : len = req.query.limit;
+    
+    for (var i = 0; i < doc.activity.length; i++){
+      log.push({"date": doc.activity[i].date, "description": doc.activity[i].description, "duration": doc.activity[i].duration});
     }
     
-    res.json({_id: doc._id, username: doc.username, "log": log});
+    log.sort((a, b) => b.date - a.date); console.log("A", log);
+    
+    log = log.filter(d => d.date >= from && d.date <= to); console.log("B", log);
+    
+    log = log.slice(0, req.query.limit); console.log("C", log);
+    
+    log.forEach(function(d){
+      d.date = d.date.toDateString();
+    });
+    
+    console.log("E", log);
+    
+    res.json({_id: doc._id, username: doc.username, from: from.toDateString(), to: to.toDateString(), count: log.length ,log: log});
   });
 
 });
