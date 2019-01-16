@@ -15,7 +15,8 @@ $(document).ready(function() {
     if (to) {link += "&to=" + to}
     if (limit) {link +=  "&limit=" + limit}
     
-    document.getElementById("test").innerHTML = link;
+    document.getElementById("urlGenerated").innerHTML = link;
+    document.getElementById("urlGenerated").href = link;
  
     $.getJSON(link, function(json) {
       
@@ -24,12 +25,14 @@ $(document).ready(function() {
           html += "<tr><td>" + i + "</td><td>" + x.date + "</td><td>" + x.description + "</td><td>" + x.duration + "</td></tr>";
           i += 1;
         })
+        $("#activityLog").html(html);
+        $("#errorMessage").html("");
       }  
       else{
-        html = json.message;
+        $("#errorMessage").html(json.message);
       }
       
-      $("#activityLog").html(html); 
+       
       i = 1;
       html = "";
     });
