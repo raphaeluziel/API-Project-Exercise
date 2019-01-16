@@ -13,13 +13,12 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
 app.use(cors())
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
-app.use(express.static('/'))
+app.use(express.static('public'))
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/')
+  res.sendFile(__dirname + '/views/index.html')
 });
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var Schema = mongoose.Schema;
 
@@ -30,6 +29,7 @@ var userSchema = new Schema({
 });
 
 var userModel = mongoose.model('userModel', userSchema);
+
 
 app.route('/api/exercise/new-user').post(function(req, res){
   
@@ -50,12 +50,13 @@ app.route('/api/exercise/new-user').post(function(req, res){
   
 });
   
+
 app.route('/api/exercise/add').post(function(req, res){
   
   var date;
   req.body.date ? date = new Date(req.body.date) : date = new Date();
   
-  if (date == "Invalid Date") {return res.send("Not a valid date format");}
+  if (date === "Invalid Date") {return res.send("Not a valid date format");}
   if (!req.body.description) {return res.send("No description provided");}
   if (!req.body.duration) {return res.send("No duration provided");}
   if (!req.body.userId) {return res.send("No user ID provided");}
@@ -82,15 +83,19 @@ app.route('/api/exercise/add').post(function(req, res){
 
 
 app.route('/api/exercise/log').get(function(req, res){
-
-  var from = new Date(req.query.from);
-  var to = new Date(req.query.to);
   
-  console.log(from.toDateString(), " to ", to.toDateString());
+  var from, to;
   
-  var query = userModel.findById({_id: req.query.userId})
+  (!req.query.from) ? from = new Date(0) : from = new Date(req.query.from);
+  (!req.query.to) ? to = new Date() : to = new Date(req.query.to);
   
-  query.then(function(doc){
+  if ((from == "Invalid Date") || (to == "Invalid Date")) {return res.json({message: "Not a valid date format"})}
+ 
+  var query = userModel.findById(req.query.userId, function(err, doc){
+    
+    if (err) return console.log("ERROR FINDING BY ID");
+    
+    if(!doc) {return res.json({message: "No user with that ID exists"})}
     
     var log = [];
 
@@ -101,28 +106,23 @@ app.route('/api/exercise/log').get(function(req, res){
       log.push({"date": doc.activity[i].date, "description": doc.activity[i].description, "duration": doc.activity[i].duration});
     }
     
-    log.sort((a, b) => b.date - a.date); console.log("A", log);
+    log.sort((a, b) => b.date - a.date);
     
-    log = log.filter(d => d.date >= from && d.date <= to); console.log("B", log);
+    log = log.filter(d => d.date >= from && d.date <= to);
     
-    log = log.slice(0, req.query.limit); console.log("C", log);
+    if(req.query.limit > 0){
+      log = log.slice(0, req.query.limit);
+    }
     
     log.forEach(function(d){
       d.date = d.date.toDateString();
     });
     
-    console.log("E", log);
-    
     res.json({_id: doc._id, username: doc.username, from: from.toDateString(), to: to.toDateString(), count: log.length ,log: log});
-  });
-
+  })
+  
 });
-
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
-})
+});
