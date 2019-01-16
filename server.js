@@ -35,9 +35,7 @@ app.route('/api/exercise/new-user').post(function(req, res){
   
   if (!req.body.username) {return res.send("No username provided");}
 
-  var query = userModel.findOne({username: req.body.username});
-  
-  query.then(function(doc){
+  var query = userModel.findOne({username: req.body.username}, function(err, doc){
     if(!doc){
       //var newId = shortid.generate; console.log(newId);
       var newUser = new userModel({username: req.body.username});
