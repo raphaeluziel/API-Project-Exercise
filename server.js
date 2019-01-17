@@ -37,7 +37,6 @@ app.route('/api/exercise/new-user').post(function(req, res){
 
   var query = userModel.findOne({username: req.body.username}, function(err, doc){
     if(!doc){
-      //var newId = shortid.generate; console.log(newId);
       var newUser = new userModel({username: req.body.username});
       newUser.save(function(err, data){
         res.json({username: data.username, _id: data._id});

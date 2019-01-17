@@ -23,7 +23,7 @@ $(document).ready(function() {
       var html;
       
       if (!json.message){
-        html = "<p><strong>Activity log for " + json.username + " from " + json.from + " to " + json.to + " limit " + json.limit 
+        html = "<p><strong>Activity log for " + json.username + " from " + json.from + " to " + json.to + " limit " + json.count 
           + "</strong></p><table><tr><th>No</th><th>DATE</th><th>ACTIVITY</th><th>DURATION</th></tr>";
         json.log.forEach(function(x){
           html += "<tr><td>" + i + "</td><td>" + x.date + "</td><td>" + x.description + "</td><td>" + x.duration + "</td></tr>";
@@ -41,4 +41,6 @@ $(document).ready(function() {
       html = "";
     });
   });
+  
+  
 });
