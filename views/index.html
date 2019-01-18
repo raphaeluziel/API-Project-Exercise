@@ -21,9 +21,20 @@
     
     <!-- Register a new user -->
     <div class="form">
-      <form action="/api/exercise/new-user" method="post">
         <h3>Register</h3>
         <p><code>POST /api/exercise/new-user</code></p>
+        <p>
+          Get json list of all users in database: <a href="https://api-uziel-exercise.glitch.me/api/exercise/users" target="_blank">
+          https://api-uziel-exercise.glitch.me/api/exercise/users</a>
+        </p>
+        <p>
+          Toggle a list of all users as a list by clicking 
+          <span id="getAllUsers" class="buttonLink">here</span>.
+        </p>
+      <div id="userList">
+        TESTING USER LIST
+      </div>
+      <form action="/api/exercise/new-user" method="post">
         <input id="uname" type="text" name="username" placeholder="username">
         <input id="getUser" type="submit" value="Submit" class="button" >
       </form>

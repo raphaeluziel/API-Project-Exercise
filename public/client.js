@@ -40,7 +40,41 @@ $(document).ready(function() {
       i = 1;
       html = "";
     });
+    
   });
+  
+  
+  var toggle = -1;
+  
+  $("#getAllUsers").on("click", function() {
+ 
+    $.getJSON("https://api-uziel-exercise.glitch.me/api/exercise/users", function(json) {
+      
+      
+      if (toggle < 0){
+      var html = "<ol>";
+      
+      json.forEach(function(x){
+          html += "<li>" + x.username + ": " + x.userId + "</li>";
+        })
+      
+      html += "</ol>"
+      
+      $("#userList").html(html);
+      
+      }
+      
+      else{
+        $("#userList").html("");
+      }
+      
+      toggle *= -1;
+      
+    });
+    
+  });
+  
+  
   
   
 });

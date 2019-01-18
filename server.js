@@ -53,10 +53,11 @@ app.route('/api/exercise/add').post(function(req, res){
   var date;
   req.body.date ? date = new Date(req.body.date) : date = new Date();
   
-  if (date === "Invalid Date") {return res.send("Not a valid date format");}
+  if (!req.body.userId) {return res.send("No user ID provided");}
   if (!req.body.description) {return res.send("No description provided");}
   if (!req.body.duration) {return res.send("No duration provided");}
-  if (!req.body.userId) {return res.send("No user ID provided");}
+  if (date == "Invalid Date") {return res.send("Not a valid date format");}
+  
 
   userModel.findById(req.body.userId, function(err, data){
 
@@ -116,6 +117,26 @@ app.route('/api/exercise/log').get(function(req, res){
     });
     
     res.json({_id: doc._id, username: doc.username, from: from.toDateString(), to: to.toDateString(), count: log.length ,log: log});
+  })
+  
+});
+
+
+app.route('/api/exercise/users').get(function(req, res){
+  
+  userModel.find({}, function(err, doc){
+    
+    if (err) return console.log("ERROR FINDING ALL USERS");
+    
+    if(!doc) {return res.json({message: "Database is empty"})}
+    
+    var users = [];
+    
+    for (var i = 0; i < doc.length; i++){
+      users[i] = {"username": doc[i].username, "userId": doc[i]._id}
+    }
+    
+    res.send(users);
   })
   
 });

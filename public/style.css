@@ -45,3 +45,9 @@ input{
 .button:hover{
   background-color: lightsalmon;
 }
+
+.buttonLink{
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
+}
