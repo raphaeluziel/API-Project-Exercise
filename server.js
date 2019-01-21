@@ -5,15 +5,19 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const shortid = require('shortid');
+const helmet = require('helmet');
 
 var port = process.env.PORT || 3000;
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
 
-app.use(cors())
-app.use(bodyParser.urlencoded({extended: false}))
-app.use(bodyParser.json())
-app.use(express.static('public'))
+app.use(cors());
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
+app.use(express.static('public'));
+app.use(helmet.hidePoweredBy({ setTo: 'PHP 4.2.0' }));
+
+helmet.hidePoweredBy();
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html')
