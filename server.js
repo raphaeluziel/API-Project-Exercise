@@ -11,23 +11,14 @@ var port = process.env.PORT || 3000;
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
 
+// HelmetJS protection
+app.use(helmet());
+
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(express.static('public'));
-app.use(helmet.hidePoweredBy({ setTo: 'PHP 4.2.0' }));
-app.use(helmet.frameguard({ action: 'deny' }));
-app.use(helmet.xssFilter());
-app.use(helmet.noSniff());
-app.use(helmet.ieNoOpen());
-app.use(helmet.hsts({maxAge: 90*24*60*60*1000, force:true}));
 
-helmet.hidePoweredBy();
-helmet.frameguard();
-helmet.xssFilter();
-helmet.noSniff();
-helmet.ieNoOpen();
-helmet.hsts();
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html')
